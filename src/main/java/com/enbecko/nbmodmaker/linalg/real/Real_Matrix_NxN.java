@@ -8,7 +8,7 @@ import java.util.Arrays;
  */
 public class Real_Matrix_NxN extends Real_Matrix_MxN {
     private final int length;
-    private Real_Matrix_NxN LU_lower, LU_upper, LU_permutation, ident_Stub;
+    private Real_Matrix_NxN LU_lower, LU_upper, LU_permutation;
     private Real_Vec_n x, y, Pb;
 
     public Real_Matrix_NxN(int length) {
@@ -53,13 +53,12 @@ public class Real_Matrix_NxN extends Real_Matrix_MxN {
     public void doLUDecomposition() {
         if (LU_lower == null) {
             LU_upper = NxN_FACTORY.makeMatrixFromMatrix(this);
-            LU_lower = NxN_FACTORY.makeIdent(this.length);
-            LU_permutation = NxN_FACTORY.makeIdent(this.length);
-            ident_Stub = NxN_FACTORY.makeIdent(this.length);
+            LU_lower = NxN_FACTORY.makeIdent(this.length, 0);
+            LU_permutation = NxN_FACTORY.makeIdent(this.length, 0);
         } else {
             this.LU_upper.fillWithContent(this);
-            this.LU_lower.fillWithContent(ident_Stub);
-            this.LU_permutation.fillWithContent(ident_Stub);
+            this.LU_lower.toIdentWithOffset(0);
+            this.LU_permutation.toIdentWithOffset(0);
         }
         int length = this.m;
         for (int k = 0; k < length; k++) {
@@ -148,10 +147,9 @@ public class Real_Matrix_NxN extends Real_Matrix_MxN {
             return new Real_Matrix_NxN(matrix);
         }
 
-        public static Real_Matrix_NxN makeIdent(int length) {
+        public static Real_Matrix_NxN makeIdent(int length, int off) {
             Real_Matrix_NxN out = new Real_Matrix_NxN(length);
-            for (int k = 0; k < length; k++)
-                out.content[k][k] = 1;
+            out.toIdentWithOffset(off);
             return out;
         }
     }

@@ -18,6 +18,26 @@ public class Vec4 extends Real_Vec_n {
         this(x, y, z, 1);
     }
 
+    public Vec4 update(float x, float y, float z) {
+        this.content[0][0] = x;
+        this.content[1][0] = y;
+        this.content[2][0] = z;
+        return this;
+    }
+
+    public Vec4 update(float x, float y, float z, float w) {
+        this.update(x, y, z);
+        this.content[3][0] = w;
+        return this;
+    }
+
+    public Vec4 update(Vec4 other) {
+        for (int k = 0; k < 4; k++) {
+            this.content[k][0] = other.content[k][0];
+        }
+        return this;
+    }
+
     public Vec4 cross(boolean normLhs, Vec4 rhs, boolean normRhs, @Nullable Vec4 fill) {
         if (this.size == rhs.size) {
             Vec4 out = fill == null ? new Vec4() : fill;
@@ -61,13 +81,21 @@ public class Vec4 extends Real_Vec_n {
         return out;
     }
 
+    public Vec4 normalizeWithoutW(boolean normToW) {
+        float norm = this.lengthOfVec3(normToW);
+        for (int k = 0; k < 3; k++) {
+            this.content[k][0] /= norm;
+        }
+        return this;
+    }
+
     public float lengthOfVec3(boolean normToW) {
-        float normOfLhs = normToW ? this.normalizeToW() : 1;
-        this.content[3][0] = 0;
-        float out = this.length();
-        if (normOfLhs != 1)
-            this.multiply(normOfLhs, null);
-        return out;
+        if (normToW)
+            this.normalizeToW();
+        float val = 0;
+        for (int k = 0; k < 3; k++)
+            val += Math.pow(this.content[k][0], 2);
+        return (float) Math.sqrt(val);
     }
 
     public float getX() {
