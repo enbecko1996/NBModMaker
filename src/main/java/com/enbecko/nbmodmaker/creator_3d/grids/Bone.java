@@ -11,7 +11,7 @@ import com.enbecko.nbmodmaker.linalg.real.Vec4;
 public class Bone {
     /**
      * Rotation is in a right-handed coordinate system with the
-     * roll-axis as x, yaw as z und pitch as y.
+     * roll-axis as x, yasw as z und pitch as y.
      */
     private double yaw, pitch, roll, axisAngle;
     private Vec3 rotationAxis;
