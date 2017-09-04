@@ -14,6 +14,10 @@ public class Vec3 extends Real_Vec_n {
         super(x, y, z);
     }
 
+    public Vec3(Vec3 other) {
+        super(other);
+    }
+
     public Vec3 update(float x, float y, float z) {
         this.content[0][0] = x;
         this.content[1][0] = y;
@@ -36,7 +40,7 @@ public class Vec3 extends Real_Vec_n {
             out.content[2][0] = this.content[0][0] * rhs.content[1][0] - this.content[1][0] * rhs.content[0][0];
             return out;
         } else
-            throw new RuntimeException("You can't dot \n" + this + " and \n" + rhs);
+            throw new RuntimeException("You can't dot3D \n" + this + " and \n" + rhs);
     }
 
     public float dot(Vec3 rhs) {
@@ -46,7 +50,7 @@ public class Vec3 extends Real_Vec_n {
                 val += this.content[k][0] * rhs.content[k][0];
             return val;
         } else
-            throw new RuntimeException("You can't dot \n" + this + " and \n" + rhs);
+            throw new RuntimeException("You can't dot3D \n" + this + " and \n" + rhs);
     }
 
     public float getX() {

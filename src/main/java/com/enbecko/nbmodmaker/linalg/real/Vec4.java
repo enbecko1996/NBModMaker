@@ -18,6 +18,10 @@ public class Vec4 extends Real_Vec_n {
         this(x, y, z, 1);
     }
 
+    public Vec4(Vec4 other) {
+        super(other);
+    }
+
     public Vec4 update(float x, float y, float z) {
         this.content[0][0] = x;
         this.content[1][0] = y;
@@ -48,15 +52,15 @@ public class Vec4 extends Real_Vec_n {
             out.content[2][0] = this.content[0][0] * rhs.content[1][0] - this.content[1][0] * rhs.content[0][0];
             out.content[3][0] = 1;
             if (normOfLhs != 1)
-                this.multiply(normOfLhs, null);
+                this.mul(normOfLhs, null);
             if (normOfRhs != 1)
-                rhs.multiply(normOfRhs, null);
+                rhs.mul(normOfRhs, null);
             return out;
         } else
-            throw new RuntimeException("You can't dot \n" + this + " and \n" + rhs);
+            throw new RuntimeException("You can't dot3D \n" + this + " and \n" + rhs);
     }
 
-    public float dot(boolean normLhs, Vec4 rhs, boolean normRhs) {
+    public float dot3D(boolean normLhs, Vec4 rhs, boolean normRhs) {
         if (this.size == rhs.size) {
             float normOfLhs = normLhs ? this.normalizeToW() : 1;
             float normOfRhs = normRhs ? rhs.normalizeToW() : 1;
@@ -64,12 +68,12 @@ public class Vec4 extends Real_Vec_n {
             for (int k = 0; k < 3; k++)
                 val += this.content[k][0] * rhs.content[k][0];
             if (normOfLhs != 1)
-                this.multiply(normOfLhs, null);
+                this.mul(normOfLhs, null);
             if (normOfRhs != 1)
-                rhs.multiply(normOfRhs, null);
+                rhs.mul(normOfRhs, null);
             return val;
         } else
-            throw new RuntimeException("You can't dot \n" + this + " and \n" + rhs);
+            throw new RuntimeException("You can't dot3D \n" + this + " and \n" + rhs);
     }
 
     public float normalizeToW() {

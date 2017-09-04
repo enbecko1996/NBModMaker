@@ -10,6 +10,7 @@ public class Real_Matrix_NxN extends Real_Matrix_MxN {
     private final int length;
     private Real_Matrix_NxN LU_lower, LU_upper, LU_permutation;
     private Real_Vec_n x, y, Pb;
+    private boolean LUDecomposed = false;
 
     public Real_Matrix_NxN(int length) {
         super(length, length);
@@ -21,18 +22,26 @@ public class Real_Matrix_NxN extends Real_Matrix_MxN {
         this.length = length;
     }
 
-    public Real_Matrix_NxN(int m, Real_Vec_n[] columns) {
-        super(m, columns);
-        this.length = m;
-        if (columns.length != columns[0].getSize())
-            throw new RuntimeException("Can't make NxN matrix with those columns: \n" + Arrays.toString(columns));
+    protected Real_Matrix_NxN(int m, Real_Vec_n[] columns) {
+        this(m);
+        for (int nC = 0; nC < columns.length; nC++) {
+            for (int mC = 0; mC < columns[nC].getSize(); mC++) {
+                if (mC < m) {
+                    this.content[mC][nC] = columns[nC].content[mC][0];
+                }
+            }
+        }
     }
 
-    public Real_Matrix_NxN(Real_Vec_n[] rows, int n) {
-        super(rows, n);
-        this.length = n;
-        if (rows.length != rows[0].getSize())
-            throw new RuntimeException("Can't make NxN matrix with those rows: \n" + Arrays.toString(rows));
+    protected Real_Matrix_NxN(Real_Vec_n[] rows, int n) {
+        this(n);
+        for (int mC = 0; mC < rows.length; mC++) {
+            for (int nC = 0; nC < rows[mC].getSize(); nC++) {
+                if (nC < n) {
+                    this.content[mC][nC] = rows[mC].content[nC][0];
+                }
+            }
+        }
     }
 
     public Real_Matrix_NxN(Real_Matrix_NxN other) {
@@ -83,7 +92,6 @@ public class Real_Matrix_NxN extends Real_Matrix_MxN {
                     LU_lower.content[swapRow][lk] = tmp;
                 }
             }
-            System.out.println(LU_upper);
             //Eliminating
             for (int p = k + 1; p < length; p++) {
                 if (LU_upper.content[p][k] != 0) {
@@ -94,6 +102,7 @@ public class Real_Matrix_NxN extends Real_Matrix_MxN {
                 }
             }
         }
+        this.LUDecomposed = true;
     }
 
     public Real_Matrix_NxN invert(@Nullable Real_Matrix_NxN fill) {
@@ -114,14 +123,14 @@ public class Real_Matrix_NxN extends Real_Matrix_MxN {
     }
 
     public Real_Vec_n solveLGS_fromLU(Real_Vec_n rhs, @Nullable Real_Vec_n fill) {
-        if (this.LU_permutation != null && this.LU_lower != null && this.LU_upper != null) {
+        if (this.LUDecomposed) {
             //solve Ly = Pb
             if (this.y == null || this.Pb == null) {
                 y = new Real_Vec_n(this.length);
                 Pb = new Real_Vec_n(this.length);
             }
-            Real_Vec_n out = (fill == null || fill.size != this.length) ? new Real_Vec_n(this.length) : fill;
-            this.LU_permutation.multiply(rhs, Pb);
+            Real_Vec_n out = (fill == null || fill.size <= this.length) ? new Real_Vec_n(this.length) : fill;
+            this.LU_permutation.mul(rhs, Pb);
             for (int k = 0; k < y.size; k++) {
                 double sumOfLower = 0;
                 for (int i = 0; i <= k - 1; i++)
@@ -129,12 +138,12 @@ public class Real_Matrix_NxN extends Real_Matrix_MxN {
                 y.content[k][0] = (float) ((Pb.content[k][0] - sumOfLower) / this.LU_lower.getAt(k, k));
             }
 
-            //solving Rx = y
-            for (int k = 0; k < out.size; k++) {
+            //solving Rx = yInGrid
+            for (int k = 0; k < this.length; k++) {
                 double sumOfLower = 0;
                 for (int i = 0; i <= k - 1; i++)
-                    sumOfLower += out.content[out.size - 1 - i][0] * this.LU_upper.getAt(out.size - 1 - k, out.size - 1 - i);
-                out.content[out.size - 1 - k][0] = (float) ((y.content[out.size - 1 - k][0] - sumOfLower) / this.LU_upper.getAt(out.size - 1 - k, out.size - 1 - k));
+                    sumOfLower += out.content[this.length - 1 - i][0] * this.LU_upper.getAt(this.length - 1 - k, this.length - 1 - i);
+                out.content[this.length - 1 - k][0] = (float) ((y.content[this.length - 1 - k][0] - sumOfLower) / this.LU_upper.getAt(this.length - 1 - k, this.length - 1 - k));
             }
             return out;
         } else {
@@ -152,5 +161,9 @@ public class Real_Matrix_NxN extends Real_Matrix_MxN {
             out.toIdentWithOffset(off);
             return out;
         }
+    }
+
+    public boolean isLUDecomposed() {
+        return this.LUDecomposed;
     }
 }

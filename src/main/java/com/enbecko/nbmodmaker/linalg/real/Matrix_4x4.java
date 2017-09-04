@@ -5,11 +5,11 @@ package com.enbecko.nbmodmaker.linalg.real;
  */
 public class Matrix_4x4 extends Real_Matrix_NxN {
     public static class MATRIXFACTORY {
-        public static Matrix_4x4 makeMatrixFromColumns(Real_Vec_n[] columns) {
+        public static Matrix_4x4 makeMatrixFromColumns(Vec4[] columns) {
             return new Matrix_4x4(4, columns);
         }
 
-        public static Matrix_4x4 makeMatrixFromRows(Real_Vec_n[] rows) {
+        public static Matrix_4x4 makeMatrixFromRows(Vec4[] rows) {
             return new Matrix_4x4(rows, 4);
         }
 
@@ -28,11 +28,11 @@ public class Matrix_4x4 extends Real_Matrix_NxN {
         super(4, content);
     }
 
-    private Matrix_4x4(int m, Real_Vec_n[] columns) {
+    protected Matrix_4x4(int m, Vec4[] columns) {
         super(m, columns);
     }
 
-    private Matrix_4x4(Real_Vec_n[] rows, int n) {
+    protected Matrix_4x4(Vec4[] rows, int n) {
         super(rows, n);
     }
 

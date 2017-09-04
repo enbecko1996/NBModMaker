@@ -16,6 +16,11 @@ public class Real_Vec_n extends Real_Matrix_MxN {
         super(content.length, 1, content);
     }
 
+    public Real_Vec_n(Real_Vec_n other) {
+        this(other.getSize());
+        this.fillWithContent(other);
+    }
+
     public float getAt(int mC) {
         return this.getAt(mC, 0);
     }
@@ -31,7 +36,7 @@ public class Real_Vec_n extends Real_Matrix_MxN {
                 val += this.content[k][0] * rhs.content[k][0];
             return val;
         } else
-            throw new RuntimeException("You can't dot \n" + this + " and \n" + rhs);
+            throw new RuntimeException("You can't dot3D \n" + this + " and \n" + rhs);
     }
 
     public float length() {
