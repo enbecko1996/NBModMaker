@@ -36,7 +36,7 @@ public class GlobalSettings {
     }
 
     public static int unitGridSize() {
-        return 16;
+        return 8;
     }
 }
 

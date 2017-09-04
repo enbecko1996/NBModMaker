@@ -3,7 +3,8 @@ package com.enbecko.nbmodmaker.creator_3d.grids;
 import com.enbecko.nbmodmaker.creator_3d.grids.raytrace.Content;
 import com.enbecko.nbmodmaker.creator_3d.grids.raytrace.ContentHolder;
 import com.enbecko.nbmodmaker.creator_3d.grids.raytrace.RayTrace3D;
-import com.enbecko.nbmodmaker.linalg.real.Vec4;
+import com.enbecko.nbmodmaker.linalg.real.Vec3;
+import com.enbecko.nbmodmaker.linalg.real.Vec3;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -13,14 +14,14 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
  */
 public class OverlyExtendedBlockStorage extends ExtendedBlockStorage implements Content{
     private int x, y, z;
-    private final Vec4 posInGrid;
+    private final Vec3 posInGrid;
 
     public OverlyExtendedBlockStorage(int x, int y, int z, boolean storeSkylight) {
         super(y, storeSkylight);
         this.x = x;
         this.y = y;
         this.z = z;
-        this.posInGrid = new Vec4(x, y, z, 1);
+        this.posInGrid = new Vec3(x, y, z);
     }
 
     @Override
@@ -48,12 +49,12 @@ public class OverlyExtendedBlockStorage extends ExtendedBlockStorage implements 
     }
 
     @Override
-    public boolean isInside(Vec4 vec) {
+    public boolean isInside(Vec3 vec) {
         return false;
     }
 
     @Override
-    public Vec4 checkIfCrosses(RayTrace3D rayTrace3D) {
+    public Vec3 checkIfCrosses(RayTrace3D rayTrace3D) {
         return null;
     }
 
@@ -93,7 +94,7 @@ public class OverlyExtendedBlockStorage extends ExtendedBlockStorage implements 
     }
 
     @Override
-    public Vec4 getPositionInGridCoords() {
+    public Vec3 getPositionInGridCoords() {
         return posInGrid;
     }
 }

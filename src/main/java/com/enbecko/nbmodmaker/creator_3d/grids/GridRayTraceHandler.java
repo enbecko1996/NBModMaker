@@ -4,20 +4,20 @@ import com.enbecko.nbmodmaker.Log;
 import com.enbecko.nbmodmaker.Log.LogEnums;
 import com.enbecko.nbmodmaker.creator_3d.grids.raytrace.*;
 import com.enbecko.nbmodmaker.creator_3d.minecraft.Creator_Main;
-import com.enbecko.nbmodmaker.linalg.real.Vec4;
+import com.enbecko.nbmodmaker.linalg.real.Vec3;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class GridRayTraceHandler extends CuboidContent implements ContentHolder <CubicContentHolderGeometry> {
+public class GridRayTraceHandler extends CuboidContent implements ContentHolder<CubicContentHolderGeometry> {
     private List<CubicContentHolderGeometry> theHighestOrderHolders = new ArrayList<>();
     private byte theHighestOrder = 1;
     private Grid theGrid;
 
     GridRayTraceHandler(Grid theGrid) {
-        super(theGrid, new Vec4(), 0, 0, 0);
+        super(theGrid, new Vec3(), 0, 0, 0);
         this.theGrid = theGrid;
     }
 
@@ -36,21 +36,21 @@ public class GridRayTraceHandler extends CuboidContent implements ContentHolder 
         for (CubicContentHolderGeometry aContent : this.theHighestOrderHolders) {
             if (aContent.isInside(chunk.getPositionInGridCoords())) {
                 if (aContent instanceof ContentHolder) {
-                    Log.d(LogEnums.CONTENTHOLDER, this + " \nadd in already existing child: " + aContent +" content = "+ chunk);
+                    Log.d(LogEnums.CONTENTHOLDER, this + " \nadd in already existing child: " + aContent + " content = " + chunk);
                     return ((ContentHolder) aContent).addChunk(chunk);
                 }
             }
         }
         int size = this.getContentHolderSizeFromOrder(this.theHighestOrder);
-        Vec4 chunkP = chunk.getPositionInGridCoords();
-        int x = (int) chunkP.getX() / size, y = (int) chunkP.getY() / size, z = (int) chunkP.getZ() / size;
-        Vec4 pos1 = new Vec4(x * size, y * size, z * size);
+        Vec3 chunkP = chunk.getPositionInGridCoords();
+        int x = (int) Math.floor(chunkP.getX() / size), y = (int) Math.floor(chunkP.getY() / size), z = (int) Math.floor(chunkP.getZ() / size);
+        Vec3 pos1 = new Vec3(x * size, y * size, z * size);
         switch (this.theHighestOrder) {
             case 1:
                 FirstOrderHolder firstOrderHolder = (FirstOrderHolder) new FirstOrderHolder(this.theGrid, pos1, true, chunk);
                 firstOrderHolder.addParent(this);
                 this.addNewChild(firstOrderHolder);
-                Log.d(LogEnums.CONTENTHOLDER, this + " \nadd in new firstorderholder: " + firstOrderHolder +" content = "+ chunk);
+                Log.d(LogEnums.CONTENTHOLDER, this + " \nadd in new firstorderholder: " + firstOrderHolder + " content = " + chunk);
                 return true;
             default:
                 if (this.theHighestOrder < 1)
@@ -58,7 +58,7 @@ public class GridRayTraceHandler extends CuboidContent implements ContentHolder 
                 HigherOrderHolder higherOrderHolder = (HigherOrderHolder) new HigherOrderHolder(this.theGrid, pos1, this.theHighestOrder, true);
                 higherOrderHolder.addParent(this);
                 this.addNewChild(higherOrderHolder);
-                Log.d(LogEnums.CONTENTHOLDER, this + " \nadd in new higherorderholder: " + higherOrderHolder +" content = "+ chunk);
+                Log.d(LogEnums.CONTENTHOLDER, this + " \nadd in new higherorderholder: " + higherOrderHolder + " content = " + chunk);
                 return higherOrderHolder.addChunk(chunk);
         }
     }
@@ -76,9 +76,9 @@ public class GridRayTraceHandler extends CuboidContent implements ContentHolder 
             boolean increaseOrder = false;
             if (this.theHighestOrderHolders.size() > 0) {
                 int size = (int) Math.pow(Creator_Main.contentCubesPerCube, this.theHighestOrder + 1);
-                Vec4 newHoldPos = newHolder.getPositionInGridCoords();
-                Vec4 pos = new Vec4((int) (newHoldPos.getX() / size), (int) (newHoldPos.getY() / size), (int) (newHoldPos.getZ() / size));
-                Vec4 pos1 = (Vec4) new Vec4(pos).mulToThis(size);
+                Vec3 newHoldPos = newHolder.getPositionInGridCoords();
+                Vec3 pos = new Vec3((int) Math.floor(newHoldPos.getX() / size), (int) Math.floor(newHoldPos.getY() / size), (int) Math.floor(newHoldPos.getZ() / size));
+                Vec3 pos1 = (Vec3) new Vec3(pos).mulToThis(size);
                 HigherOrderHolder test = (HigherOrderHolder) new HigherOrderHolder(this.theGrid, pos1, (byte) (this.theHighestOrder + 1), true);
                 List<HigherOrderHolder> tmpContent = new ArrayList<HigherOrderHolder>();
                 boolean oneOutside = false, oneInside = false;
@@ -107,7 +107,7 @@ public class GridRayTraceHandler extends CuboidContent implements ContentHolder 
                         boolean hasParent = false;
                         for (HigherOrderHolder newCont : tmpContent) {
                             if (newCont.isInside(tmp.getPositionInGridCoords())) {
-                                Log.d(LogEnums.CONTENTHOLDER, (newCont == test) +"  "+ tmp +", "+ newHolder+" "+ Arrays.toString(newCont.getContent().toArray()));
+                                Log.d(LogEnums.CONTENTHOLDER, (newCont == test) + "  " + tmp + ", " + newHolder + " " + Arrays.toString(newCont.getContent().toArray()));
                                 newCont.addNewChild(tmp);
                                 tmp.addParent(newCont);
                                 hasParent = true;
@@ -115,9 +115,9 @@ public class GridRayTraceHandler extends CuboidContent implements ContentHolder 
                             }
                         }
                         if (!hasParent) {
-                            pos.update(tmp.getPositionInGridCoords()).divToThis(size);
+                            pos.update((int) Math.floor(tmp.getPositionInGridCoords().getX() / size), (int) Math.floor(tmp.getPositionInGridCoords().getY() / size), (int) Math.floor(tmp.getPositionInGridCoords().getZ() / size));
                             pos1.update(pos).mulToThis(size);
-                            HigherOrderHolder increasedHolder = (HigherOrderHolder) new HigherOrderHolder(this.theGrid, pos1, this.theHighestOrder, true);
+                            HigherOrderHolder increasedHolder = new HigherOrderHolder(this.theGrid, pos1, this.theHighestOrder, true);
                             tmpContent.add(increasedHolder);
                             increasedHolder.addNewChild(tmp);
                             increasedHolder.addParent(this);

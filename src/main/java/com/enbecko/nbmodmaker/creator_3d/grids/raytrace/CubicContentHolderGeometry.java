@@ -2,7 +2,7 @@ package com.enbecko.nbmodmaker.creator_3d.grids.raytrace;
 
 import com.enbecko.nbmodmaker.creator_3d.grids.Grid;
 import com.enbecko.nbmodmaker.creator_3d.minecraft.Creator_Main;
-import com.enbecko.nbmodmaker.linalg.real.Vec4;
+import com.enbecko.nbmodmaker.linalg.real.Vec3;
 
 /**
  * Created by enbec on 25.02.2017.
@@ -12,7 +12,7 @@ public abstract class CubicContentHolderGeometry extends CubicContent {
     private boolean isMaxOrder;
     private int size;
 
-    protected CubicContentHolderGeometry(Grid parentGrid, Vec4 positionInGridCoords, byte order, boolean isMaxOrder) {
+    protected CubicContentHolderGeometry(Grid parentGrid, Vec3 positionInGridCoords, byte order, boolean isMaxOrder) {
         super(parentGrid, positionInGridCoords, (int) Math.pow(Creator_Main.contentCubesPerCube, order));
         this.setCanChangePosition(false);
         this.size = (int) Math.pow(Creator_Main.contentCubesPerCube, order);
@@ -32,7 +32,7 @@ public abstract class CubicContentHolderGeometry extends CubicContent {
     }
 
     @Override
-    public Vec4 getPositionInGridCoords() {
+    public Vec3 getPositionInGridCoords() {
         return this.positionInGridCoords;
     }
 

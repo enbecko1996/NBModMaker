@@ -2,7 +2,7 @@ package com.enbecko.nbmodmaker.creator_3d.grids.raytrace;
 
 import com.enbecko.nbmodmaker.creator_3d.grids.Grid;
 import com.enbecko.nbmodmaker.creator_3d.grids.OverlyExtendedBlockStorage;
-import com.enbecko.nbmodmaker.linalg.real.Vec4;
+import com.enbecko.nbmodmaker.linalg.real.Vec3;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -15,7 +15,7 @@ public class FirstOrderHolder extends CubicContentHolderGeometry implements Cont
     OverlyExtendedBlockStorage theContent;
     ContentHolder parent;
 
-    public FirstOrderHolder(Grid parentGrid, Vec4 positionInGridCoords, boolean isMaxOrder, OverlyExtendedBlockStorage theContent) {
+    public FirstOrderHolder(Grid parentGrid, Vec3 positionInGridCoords, boolean isMaxOrder, OverlyExtendedBlockStorage theContent) {
         super(parentGrid, positionInGridCoords, (byte) 1, isMaxOrder);
         this.theContent = theContent;
     }
@@ -105,7 +105,7 @@ public class FirstOrderHolder extends CubicContentHolderGeometry implements Cont
         double smallestDist = Double.POSITIVE_INFINITY;
         Content tmpResult = null;
         for (Content content : this.content) {
-            Vec4 pos;
+            Vec3 pos;
             if ((pos = content.checkIfCrosses(rayTrace3D)) != null) {
                 double d = pos.subFromThis(rayTrace3D.getOnPoint()).length();
                 if (d < smallestDist) {

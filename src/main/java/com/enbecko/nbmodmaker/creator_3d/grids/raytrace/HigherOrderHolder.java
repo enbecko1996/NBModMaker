@@ -5,7 +5,7 @@ import com.enbecko.nbmodmaker.Log.LogEnums;
 import com.enbecko.nbmodmaker.creator_3d.grids.Grid;
 import com.enbecko.nbmodmaker.creator_3d.grids.OverlyExtendedBlockStorage;
 import com.enbecko.nbmodmaker.creator_3d.minecraft.Creator_Main;
-import com.enbecko.nbmodmaker.linalg.real.Vec4;
+import com.enbecko.nbmodmaker.linalg.real.Vec3;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class HigherOrderHolder extends CubicContentHolderGeometry implements Con
     protected final List<CubicContentHolderGeometry> rayTraceResult = new ArrayList<CubicContentHolderGeometry>();
     protected double[] distance = new double[Creator_Main.contentCubesPerCube];
 
-    public HigherOrderHolder(Grid parentGrid, Vec4 positionInGridCoords, byte order, boolean isMaxOrder) {
+    public HigherOrderHolder(Grid parentGrid, Vec3 positionInGridCoords, byte order, boolean isMaxOrder) {
         super(parentGrid, positionInGridCoords, order, isMaxOrder);
     }
 
@@ -34,7 +34,7 @@ public class HigherOrderHolder extends CubicContentHolderGeometry implements Con
             else
                 break;
         }
-        Vec4 pos;
+        Vec3 pos;
         for (CubicContentHolderGeometry holder : holders) {
             if (holder.isInside(rayTrace3D.getOnPoint())) {
                 this.rayTraceResult.add(0, holder);
@@ -49,7 +49,7 @@ public class HigherOrderHolder extends CubicContentHolderGeometry implements Con
                 }
             }
             if ((pos = holder.checkIfCrosses(rayTrace3D)) != null) {
-                double d = ((Vec4)pos.subFromThis(rayTrace3D.getOnPoint())).lengthOfVec3(false);
+                double d = ((Vec3)pos.subFromThis(rayTrace3D.getOnPoint())).length();
                 int k = 0;
                 for (; k < distance.length; k++) {
                     if (distance[k] == 0 || distance[k] > d) {
@@ -125,10 +125,10 @@ public class HigherOrderHolder extends CubicContentHolderGeometry implements Con
                     }
                 }
             }
-            Vec4 pos = (Vec4) new Vec4(chunk.getPositionInGridCoords()).subFromThis(this.positionInGridCoords);
+            Vec3 pos = (Vec3) new Vec3(chunk.getPositionInGridCoords()).subFromThis(this.positionInGridCoords);
             int belowOrderSize = (this.getSize() / Creator_Main.contentCubesPerCube);
             int k = (int) pos.getX() / belowOrderSize, l = (int) pos.getY() / belowOrderSize, m = (int) pos.getZ() / belowOrderSize;
-            Vec4 pos1 = (Vec4) this.positionInGridCoords.newAdd(new Vec4(k * belowOrderSize, l * belowOrderSize, m * belowOrderSize));
+            Vec3 pos1 = (Vec3) this.positionInGridCoords.add(new Vec3(k * belowOrderSize, l * belowOrderSize, m * belowOrderSize), new Vec3());
             if (k < 0 || k >= Creator_Main.contentCubesPerCube || l < 0 || l >= Creator_Main.contentCubesPerCube || m < 0 || m >= Creator_Main.contentCubesPerCube)
                 throw new RuntimeException("This: " + chunk + " doesn't belong here: " + this + ", k = " + k + ", l = " + l + ", m = " + m + ", " + pos);
             switch (this.getOrder()) {
@@ -151,7 +151,7 @@ public class HigherOrderHolder extends CubicContentHolderGeometry implements Con
     public boolean addNewChild(@Nonnull CubicContentHolderGeometry content) {
         if (content.getOrder() != this.getOrder() - 1)
             throw new RuntimeException("The ContentHolder you want to add must have a order which is one lower than this's " + this + ", " + content);
-        Vec4 pos = (Vec4) new Vec4(content.getPositionInGridCoords()).subFromThis(this.positionInGridCoords);
+        Vec3 pos = (Vec3) new Vec3(content.getPositionInGridCoords()).subFromThis(this.positionInGridCoords);
         int size = content.getSize();
         int k = (int) pos.getX() / size, l = (int) pos.getY() / size, m = (int) pos.getZ() / size;
         if (k < 0 || k >= Creator_Main.contentCubesPerCube || l < 0 || l >= Creator_Main.contentCubesPerCube || m < 0 || m >= Creator_Main.contentCubesPerCube)
@@ -167,7 +167,7 @@ public class HigherOrderHolder extends CubicContentHolderGeometry implements Con
     @Override
     @SuppressWarnings("unchecked")
     public boolean removeChild(@Nonnull CubicContentHolderGeometry content) {
-        Vec4 pos = (Vec4) new Vec4(content.getPositionInGridCoords()).subFromThis(this.positionInGridCoords);
+        Vec3 pos = (Vec3) new Vec3(content.getPositionInGridCoords()).subFromThis(this.positionInGridCoords);
         int size = content.getSize();
         int k = (int) (Math.floor(pos.getX() / size)), l = (int) (Math.floor(pos.getY() / size)), m = (int) (Math.floor(pos.getZ() / size));
         if (k < 0 || k >= Creator_Main.contentCubesPerCube || l < 0 || l >= Creator_Main.contentCubesPerCube || m < 0 || m >= Creator_Main.contentCubesPerCube)

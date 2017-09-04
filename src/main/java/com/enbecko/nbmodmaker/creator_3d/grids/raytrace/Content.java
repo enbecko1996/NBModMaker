@@ -2,7 +2,7 @@ package com.enbecko.nbmodmaker.creator_3d.grids.raytrace;
 
 import com.enbecko.nbmodmaker.LocalRenderSetting;
 import com.enbecko.nbmodmaker.creator_3d.grids.Grid;
-import com.enbecko.nbmodmaker.linalg.real.Vec4;
+import com.enbecko.nbmodmaker.linalg.real.Vec3;
 import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -20,9 +20,9 @@ public interface Content {
 
     public abstract boolean isFullInside(Content other);
 
-    public abstract boolean isInside(Vec4 vec);
+    public abstract boolean isInside(Vec3 vec);
 
-    public abstract Vec4 checkIfCrosses(RayTrace3D rayTrace3D);
+    public abstract Vec3 checkIfCrosses(RayTrace3D rayTrace3D);
 
     float getMaxX();
 
@@ -38,26 +38,26 @@ public interface Content {
 
     boolean addParent(ContentHolder holder);
 
-    Vec4 getPositionInGridCoords();
+    Vec3 getPositionInGridCoords();
 
     public abstract static class ContentBase implements Content {
-        protected final Vec4 positionInGridCoords;
+        protected final Vec3 positionInGridCoords;
         private final List<ContentHolder> parents = new ArrayList<ContentHolder>();
         @Nonnull
         protected final Grid parentGrid;
         private boolean canChangePosition;
 
-        public ContentBase(Grid parentGrid, Vec4 positionInGridCoords, boolean canChangePosition) {
-            this.positionInGridCoords = (Vec4) new Vec4(positionInGridCoords).setMuted(canChangePosition);
+        public ContentBase(Grid parentGrid, Vec3 positionInGridCoords, boolean canChangePosition) {
+            this.positionInGridCoords = (Vec3) new Vec3(positionInGridCoords).setMuted(canChangePosition);
             this.parentGrid = parentGrid;
             this.canChangePosition = canChangePosition;
         }
 
-        public ContentBase(Grid parentGrid, Vec4 positionInGridCoords) {
+        public ContentBase(Grid parentGrid, Vec3 positionInGridCoords) {
             this(parentGrid, positionInGridCoords, true);
         }
 
-        public ContentBase(Grid parentGrid, ContentHolder parent, Vec4 positionInGridCoords) {
+        public ContentBase(Grid parentGrid, ContentHolder parent, Vec3 positionInGridCoords) {
             this(parentGrid, positionInGridCoords);
             this.addParent(parent);
         }
@@ -77,7 +77,7 @@ public interface Content {
             this.positionInGridCoords.update(x, y, z);
         }
 
-        public void updatePosition(Vec4 other) {
+        public void updatePosition(Vec3 other) {
             this.positionInGridCoords.update(other);
         }
 
@@ -86,7 +86,7 @@ public interface Content {
             return this.parentGrid;
         }
 
-        public Vec4 getPositionInGridCoords() {
+        public Vec3 getPositionInGridCoords() {
             return this.positionInGridCoords;
         }
 

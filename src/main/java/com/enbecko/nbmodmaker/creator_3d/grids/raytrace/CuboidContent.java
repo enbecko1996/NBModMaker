@@ -1,14 +1,15 @@
 package com.enbecko.nbmodmaker.creator_3d.grids.raytrace;
 
+import com.enbecko.nbmodmaker.GlobalSettings;
 import com.enbecko.nbmodmaker.creator_3d.grids.Grid;
-import com.enbecko.nbmodmaker.linalg.real.Vec4;
+import com.enbecko.nbmodmaker.linalg.real.Vec3;
 
 import javax.annotation.Nullable;
 
 public abstract class CuboidContent extends Content.ContentBase {
     float xSize, ySize, zSize;
 
-    protected CuboidContent(Grid parentGrid, Vec4 pos, float xSize, float ySize, float zSize) {
+    protected CuboidContent(Grid parentGrid, Vec3 pos, float xSize, float ySize, float zSize) {
         super(parentGrid, pos, false);
         if (xSize >= 0 && ySize >= 0 && zSize >= 0) {
             this.xSize = xSize;
@@ -40,7 +41,7 @@ public abstract class CuboidContent extends Content.ContentBase {
         this.updateSize(this.xSize, this.ySize, this.zSize);
     }
 
-    public void update(Vec4 pos, float xSize, float ySize, float zSize) {
+    public void update(Vec3 pos, float xSize, float ySize, float zSize) {
         float xMin = pos.getX(), yMin = pos.getY(), zMin = pos.getZ(),
                 xMax = xMin + xSize, yMax = yMin + ySize, zMax = zMin + zSize;
         this.update(xMin, yMin, zMin, xMax, yMax, zMax);
@@ -90,7 +91,7 @@ public abstract class CuboidContent extends Content.ContentBase {
     }
 
     @Override
-    public boolean isInside(Vec4 vec) {
+    public boolean isInside(Vec3 vec) {
         if ((vec.getY() < this.getMaxY() && vec.getY() >= this.getMinY() && vec.getX() < this.getMaxX() && vec.getX() >= this.getMinX() && vec.getZ() < this.getMaxZ() && vec.getZ() >= this.getMinZ()))
             return true;
         return false;
@@ -99,9 +100,9 @@ public abstract class CuboidContent extends Content.ContentBase {
 
     @Override
     @Nullable
-    public Vec4 checkIfCrosses(RayTrace3D rayTrace3D) {
-        Vec4 vec = rayTrace3D.getU();
-        Vec4 out;
+    public Vec3 checkIfCrosses(RayTrace3D rayTrace3D) {
+        Vec3 vec = rayTrace3D.getU();
+        Vec3 out;
         /**if (vec.getX() > 0) {
             if ((out = this.getBoundingFace(Faces.FRONT_X).checkIfCrosses(rayTrace3D)) != null)
                 return out;
@@ -125,8 +126,8 @@ public abstract class CuboidContent extends Content.ContentBase {
 
     /**@Override
     public FaceCrossPosAngle getCrossedFaceVecAndAngle(RayTrace3D rayTrace3D, BlockSetMode editMode) {
-        Vec4 vec = rayTrace3D.getVec();
-        Vec4 tmp;
+        Vec3 vec = rayTrace3D.getVec();
+        Vec3 tmp;
         Polygon3D tmp2;
         if (vec.getX() > 0) {
             if ((tmp = (tmp2 = this.getBoundingFace(Faces.FRONT_X)).checkIfCrosses(rayTrace3D)) != null)
@@ -155,7 +156,7 @@ public abstract class CuboidContent extends Content.ContentBase {
     }
 
     public String toString() {
-        return "CuboidContent: " + this.getGeometryInfo();
+        return this.hashCode() + "CuboidContent: " + this.getGeometryInfo();
     }
 
     public enum Faces {

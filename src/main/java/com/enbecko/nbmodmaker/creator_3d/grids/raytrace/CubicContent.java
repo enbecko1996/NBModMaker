@@ -1,13 +1,13 @@
 package com.enbecko.nbmodmaker.creator_3d.grids.raytrace;
 
 import com.enbecko.nbmodmaker.creator_3d.grids.Grid;
-import com.enbecko.nbmodmaker.linalg.real.Vec4;
+import com.enbecko.nbmodmaker.linalg.real.Vec3;
 
 /**
  * Created by enbec on 21.02.2017.
  */
 public abstract class CubicContent extends CuboidContent {
-    protected CubicContent(Grid parentGrid, Vec4 positonInGridCoords, float size) {
+    protected CubicContent(Grid parentGrid, Vec3 positonInGridCoords, float size) {
         super(parentGrid, positonInGridCoords, size, size, size);
     }
 
