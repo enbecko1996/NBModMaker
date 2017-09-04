@@ -43,7 +43,7 @@ public class BlockEditor extends BlockContainer{
     }
 
     /**
-     * Used to determine ambient occlusion and culling when rebuilding chunks for render
+     * Used to determine ambient occlusion and culling when rebuilding chunks for renderBlockState
      */
     @Deprecated
     public boolean isOpaqueCube(IBlockState state) {

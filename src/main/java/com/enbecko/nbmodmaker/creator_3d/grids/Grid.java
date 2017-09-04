@@ -25,6 +25,7 @@ import java.util.*;
 public class Grid implements IBlockAccess {
     private final HashMap<Integer, HashMap<Integer, HashMap<Integer, OverlyExtendedBlockStorage>>> chunks = new HashMap<Integer, HashMap<Integer, HashMap<Integer, OverlyExtendedBlockStorage>>>();
     private final Map<BlockPos, TileEntity> chunkTileEntityMap;
+    private final Map<Integer, HashMap<Integer, Set<Integer>>> dirtyPositions = new HashMap<>();
     private final int size;
     private final IBlockState AIR_BLOCK = Blocks.AIR.getDefaultState();
     private final GridRayTraceHandler rayTraceHandler;
@@ -71,8 +72,54 @@ public class Grid implements IBlockAccess {
         OverlyExtendedBlockStorage chunk = this.getChunkFromBlockPos(x, y, z);
         if (chunk != null) {
             chunk.set(x & 15, y & 15, z & 15, blockState);
-        } else {
+            if (blockState != Blocks.AIR.getDefaultState()) {
+                this.addDirtyPosition(x, y, z);
+            } else {
+                this.removeDirtyPosition(x, y, z);
+            }
+        } else if (blockState != Blocks.AIR.getDefaultState()){
             this.createChunkAtBlockPos(x, y, z).set(x & 15, y & 15, z & 15, blockState);
+            this.addDirtyPosition(x, y, z);
+        }
+    }
+
+    public HashMap<Integer, HashMap<Integer, HashMap<Integer, OverlyExtendedBlockStorage>>> getChunks() {
+        return this.chunks;
+    }
+
+    public Map<Integer, HashMap<Integer, Set<Integer>>> getDirtyPositions() {
+        return this.dirtyPositions;
+    }
+
+    private void addDirtyPosition(int x, int y, int z) {
+        if (this.dirtyPositions.containsKey(x)) {
+            if (this.dirtyPositions.get(x).containsKey(y)) {
+                this.dirtyPositions.get(x).get(y).add(z);
+            } else {
+                HashSet <Integer> yPos;
+                this.dirtyPositions.get(x).put(y, yPos = new HashSet<Integer>());
+                yPos.add(z);
+            }
+        } else {
+            HashSet <Integer> yPos;
+            HashMap <Integer, Set<Integer>> xPos;
+            this.dirtyPositions.put(x, xPos = new HashMap<>());
+            xPos.put(y, yPos = new HashSet<Integer>());
+            yPos.add(z);
+        }
+    }
+
+    private void removeDirtyPosition(int x, int y, int z) {
+        if (this.dirtyPositions.containsKey(x)) {
+            if (this.dirtyPositions.get(x).containsKey(y)) {
+                this.dirtyPositions.get(x).get(y).remove(z);
+                if (this.dirtyPositions.get(x).get(y).size() == 0) {
+                    this.dirtyPositions.get(x).remove(y);
+                    if (this.dirtyPositions.get(x).size() == 0) {
+                        this.dirtyPositions.remove(x);
+                    }
+                }
+            }
         }
     }
 
@@ -157,10 +204,11 @@ public class Grid implements IBlockAccess {
     public void readFromNBT(NBTTagCompound compound, int boneID) {
         HashMap<Integer, HashMap<Integer, OverlyExtendedBlockStorage>> tmpX;
         HashMap<Integer, OverlyExtendedBlockStorage> tmpY;
+        OverlyExtendedBlockStorage extendedBlockStorage;
         int[] coords = compound.getIntArray("coords");
         System.out.println(Arrays.toString(coords));
         for (int k = 0; k < coords.length; k += 3) {
-            OverlyExtendedBlockStorage extendedBlockStorage = this.createChunkAt(coords[k], coords[k + 1], coords[k + 2]);
+            extendedBlockStorage = this.createChunkAt(coords[k], coords[k + 1], coords[k + 2]);
             rayTraceHandler.addChunk(extendedBlockStorage);
             byte[] abyte = compound.getByteArray("Blocks_" + boneID + "_" + this.size + "_" + coords[k] + "_" + coords[k + 1] + "_" + coords[k + 2]);
             NibbleArray nibblearray = new NibbleArray(compound.getByteArray("Data_" + boneID + "_" + this.size + "_" + coords[k] + "_" + coords[k + 1] + "_" + coords[k + 2]));

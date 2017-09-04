@@ -73,8 +73,12 @@ public class GridRayTraceHandler extends CuboidContent implements ContentHolder<
             throw new RuntimeException("Can't add newHolder to Octant with wrong order " + this.theHighestOrder + ", " + newHolder.getOrder());
         if (!this.theHighestOrderHolders.contains(newHolder)) {
             Log.d(LogEnums.CONTENTHOLDER, "add new Child " + newHolder);
-            boolean increaseOrder = false;
-            if (this.theHighestOrderHolders.size() > 0) {
+            /*
+                Add THIS for increasing the order.
+             */
+            /*
+                boolean increaseOrder = false;
+                if (this.theHighestOrderHolders.size() > 0) {
                 int size = (int) Math.pow(Creator_Main.contentCubesPerCube, this.theHighestOrder + 1);
                 Vec3 newHoldPos = newHolder.getPositionInGridCoords();
                 Vec3 pos = new Vec3((int) Math.floor(newHoldPos.getX() / size), (int) Math.floor(newHoldPos.getY() / size), (int) Math.floor(newHoldPos.getZ() / size));
@@ -135,7 +139,8 @@ public class GridRayTraceHandler extends CuboidContent implements ContentHolder<
                     this.updateSizeForNewChild(newHolder);
                     return true;
                 }
-            } else {
+            } else*/
+            {
                 this.theHighestOrderHolders.add(newHolder);
                 this.updateSizeForNewChild(newHolder);
                 return true;

@@ -1,10 +1,13 @@
-package com.enbecko.nbmodmaker.creator_3d.grids.raytrace;
+package com.enbecko.nbmodmaker.creator_3d.minecraft.renderer;
 
 import com.enbecko.nbmodmaker.GlobalSettings;
 import com.enbecko.nbmodmaker.INBRenderer;
 import com.enbecko.nbmodmaker.LocalRenderSetting;
 import com.enbecko.nbmodmaker.OpenGLHelperEnbecko;
 import com.enbecko.nbmodmaker.creator_3d.grids.GridRayTraceHandler;
+import com.enbecko.nbmodmaker.creator_3d.grids.raytrace.ContentHolder;
+import com.enbecko.nbmodmaker.creator_3d.grids.raytrace.CuboidContent;
+import com.enbecko.nbmodmaker.creator_3d.grids.raytrace.FirstOrderHolder;
 import com.enbecko.nbmodmaker.linalg.real.Vec3;
 import com.enbecko.nbmodmaker.linalg.real.Vec4;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -18,7 +21,7 @@ public class RenderCuboidOutline implements INBRenderer <CuboidContent> {
     @Override
     public void render(CuboidContent cuboid, BufferBuilder vertexBuffer, LocalRenderSetting... localRenderSettings) {
         float size = cuboid.getParentGrid().getSize(), unit = GlobalSettings.unitGridSize();
-        float diff = size / unit;
+        float diff = 16 * size / unit;
         this.v1.update(cuboid.getMinX(), cuboid.getMinY(), cuboid.getMinZ()).mulToThis(diff);
         this.v2.update(cuboid.getMaxX(), cuboid.getMinY(), cuboid.getMinZ()).mulToThis(diff);
         this.v3.update(cuboid.getMaxX(), cuboid.getMaxY(), cuboid.getMinZ()).mulToThis(diff);

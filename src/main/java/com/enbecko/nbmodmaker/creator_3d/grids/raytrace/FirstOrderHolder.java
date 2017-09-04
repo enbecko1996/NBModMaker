@@ -80,11 +80,11 @@ public class FirstOrderHolder extends CubicContentHolderGeometry implements Cont
     /**
     @Override
     @SideOnly(Side.CLIENT)
-    public void render(VertexBuffer buffer, LocalRenderSetting... localRenderSettings) {
+    public void renderBlockState(VertexBuffer buffer, LocalRenderSetting... localRenderSettings) {
         if (GlobalRenderSetting.getRenderMode() == GlobalRenderSetting.RenderMode.DEBUG)
-            super.render(buffer);
+            super.renderBlockState(buffer);
         for (Content child : this.content) {
-            child.render(buffer, localRenderSettings);
+            child.renderBlockState(buffer, localRenderSettings);
         }
     }
 
@@ -92,10 +92,10 @@ public class FirstOrderHolder extends CubicContentHolderGeometry implements Cont
     @SideOnly(Side.CLIENT)
     public void renderContentWithExceptions(VertexBuffer buffer, @Nullable List<Content> exceptions, LocalRenderSetting... localRenderSettings) {
         if (GlobalRenderSetting.getRenderMode() == GlobalRenderSetting.RenderMode.DEBUG)
-            super.render(buffer);
+            super.renderBlockState(buffer);
         for (Content child : this.content) {
             if(exceptions == null || !exceptions.contains(child))
-                child.render(buffer);
+                child.renderBlockState(buffer);
         }
     }*/
 

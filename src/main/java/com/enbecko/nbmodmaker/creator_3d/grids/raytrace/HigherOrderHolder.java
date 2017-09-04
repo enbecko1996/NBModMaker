@@ -230,14 +230,14 @@ public class HigherOrderHolder extends CubicContentHolderGeometry implements Con
     /**
     @Override
     @SideOnly(Side.CLIENT)
-    public void render(VertexBuffer buffer, LocalRenderSetting... localRenderSettings) {
+    public void renderBlockState(VertexBuffer buffer, LocalRenderSetting... localRenderSettings) {
         if (GlobalRenderSetting.getRenderMode() == GlobalRenderSetting.RenderMode.DEBUG)
-            super.render(buffer);
+            super.renderBlockState(buffer);
         for (int k = 0; k < Creator_Main.contentCubesPerCube; k++) {
             for (int l = 0; l < Creator_Main.contentCubesPerCube; l++) {
                 for (int m = 0; m < Creator_Main.contentCubesPerCube; m++) {
                     if (this.content[k][l][m] != null)
-                        this.content[k][l][m].render(buffer, localRenderSettings);
+                        this.content[k][l][m].renderBlockState(buffer, localRenderSettings);
                 }
             }
         }
@@ -247,7 +247,7 @@ public class HigherOrderHolder extends CubicContentHolderGeometry implements Con
     @Override
     public void renderContentWithExceptions(VertexBuffer buffer, @Nullable List<Content> exceptions, LocalRenderSetting... localRenderSettings) {
         if (GlobalRenderSetting.getRenderMode() == GlobalRenderSetting.RenderMode.DEBUG)
-            super.render(buffer);
+            super.renderBlockState(buffer);
         for (int k = 0; k < Creator_Main.contentCubesPerCube; k++) {
             for (int l = 0; l < Creator_Main.contentCubesPerCube; l++) {
                 for (int m = 0; m < Creator_Main.contentCubesPerCube; m++) {
